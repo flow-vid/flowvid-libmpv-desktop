@@ -75,7 +75,8 @@ jobs:
       - name: Checkout toolchain
         uses: actions/checkout@v6
         with:
-          repository: shinchiro/mpv-winbuild-cmake
+          repository: FxPandaa/flowvid-mpv-winbuild-cmake
+          ref: 43af25e308815a0a1fd30bc419c3b31da1909f35
           path: mpv-winbuild-cmake
           fetch-depth: 0
 
