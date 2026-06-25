@@ -1,3 +1,11 @@
+> ## FlowVid fork — libmpv Windows **CI / build (LGPL)**
+> Builds the LGPL `libmpv-2.dll` bundled in FlowVid PC, from the pinned recipe
+> **[FxPandaa/flowvid-mpv-winbuild-cmake](https://github.com/FxPandaa/flowvid-mpv-winbuild-cmake)**.
+> LGPL via `compile-lgpl-libmpv.patch` (see **[LICENSE-NOTES.md](LICENSE-NOTES.md)**).
+> **Build order:** run `llvm.yml` → `toolchain.yml` → `mpv.yml` (with `lgpl=true`, `compiler=clang`, `build_target=64bit`).
+> Fork of `zhongfly/mpv-winbuild`.
+
+
 # mpv-winbuild
 
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/zhongfly/mpv-winbuild/mpv.yml?branch=main&cacheSeconds=1800)](https://github.com/zhongfly/mpv-winbuild/actions)
