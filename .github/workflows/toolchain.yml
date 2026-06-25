@@ -116,7 +116,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           repository: FxPandaa/flowvid-mpv-winbuild-cmake
-          ref: 43af25e308815a0a1fd30bc419c3b31da1909f35
+          ref: e0cadc79dae2c5eabb6b17ac574e42b0aa2622ff
           path: mpv-winbuild-cmake
           fetch-depth: 0
 
@@ -196,7 +196,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           repository: FxPandaa/flowvid-mpv-winbuild-cmake
-          ref: 43af25e308815a0a1fd30bc419c3b31da1909f35
+          ref: e0cadc79dae2c5eabb6b17ac574e42b0aa2622ff
           path: mpv-winbuild-cmake
           fetch-depth: 0
 
