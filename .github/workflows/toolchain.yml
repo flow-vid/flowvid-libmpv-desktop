@@ -112,6 +112,13 @@ jobs:
           git config --global fetch.prune true
       - uses: actions/checkout@v6
 
+      - name: Checkout toolchain
+        uses: actions/checkout@v6
+        with:
+          repository: FxPandaa/flowvid-mpv-winbuild-cmake
+          ref: e0cadc79dae2c5eabb6b17ac574e42b0aa2622ff
+          path: mpv-winbuild-cmake
+          fetch-depth: 0
 
       - name: Restore llvm cache
         if: ${{ inputs.compiler =='clang' }}
@@ -185,6 +192,13 @@ jobs:
           git config --global fetch.prune true
       - uses: actions/checkout@v6
 
+      - name: Checkout toolchain
+        uses: actions/checkout@v6
+        with:
+          repository: FxPandaa/flowvid-mpv-winbuild-cmake
+          ref: e0cadc79dae2c5eabb6b17ac574e42b0aa2622ff
+          path: mpv-winbuild-cmake
+          fetch-depth: 0
 
       - name: Install Rust Toolchain
         uses: ./action/build_toolchain

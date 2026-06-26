@@ -72,6 +72,13 @@ jobs:
           sudo cipd install fuchsia/third_party/clang/linux-amd64 latest -root /usr/local/fuchsia-clang
           echo "PATH=/usr/local/fuchsia-clang/bin:$PATH" >> $GITHUB_ENV
       - uses: actions/checkout@v6
+      - name: Checkout toolchain
+        uses: actions/checkout@v6
+        with:
+          repository: FxPandaa/flowvid-mpv-winbuild-cmake
+          ref: e0cadc79dae2c5eabb6b17ac574e42b0aa2622ff
+          path: mpv-winbuild-cmake
+          fetch-depth: 0
 
       - name: Build LLVM
         uses: ./action/build_toolchain
