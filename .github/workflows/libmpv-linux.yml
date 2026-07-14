@@ -69,6 +69,12 @@ jobs:
           --disable-vulkan
           EOF
           # mpv: LGPL, build libmpv (no cplayer/CLI), no Lua (avoids extra deps).
+          # libplacebo without Vulkan: its public libav.h pulls in ffmpeg's hwcontext_vulkan.h,
+          # which needs newer Vulkan headers than Ubuntu 22.04 ships (VkVideoCodecOperationFlagBitsKHR).
+          # We render via OpenGL, so Vulkan output isn't used — disabling it guards out the bad include.
+          cat > libplacebo_options <<'EOF'
+          -Dvulkan=disabled
+          EOF
           # NB: mpv 0.41 makes libass mandatory (no -Dlibass option); lcms2 is auto-detected
           # from the installed dev lib. Keep the option list minimal to avoid unknown-option errors.
           cat > mpv_options <<'EOF'
