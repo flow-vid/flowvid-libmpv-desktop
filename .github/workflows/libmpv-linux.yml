@@ -55,6 +55,9 @@ jobs:
           cd mpv-build
           # FFmpeg: LGPLv3 (NO --enable-gpl), drop GPL-only encoders (x264/x265) — decoders for
           # H.264/HEVC/AV1/VP9 are FFmpeg-native (LGPL). libdav1d = fast AV1 (BSD).
+          # --disable-vulkan: Ubuntu 22.04's Vulkan headers are too old for ffmpeg's
+          # hwcontext_vulkan.h (missing VkVideoCodecOperationFlagBitsKHR) and mpv includes it via
+          # libplacebo's libav.h → build break. We render via OpenGL, so Vulkan HW-decode is not used.
           cat > ffmpeg_options <<'EOF'
           --disable-gpl
           --enable-version3
@@ -63,6 +66,7 @@ jobs:
           --disable-doc
           --disable-libx264
           --disable-libx265
+          --disable-vulkan
           EOF
           # mpv: LGPL, build libmpv (no cplayer/CLI), no Lua (avoids extra deps).
           # NB: mpv 0.41 makes libass mandatory (no -Dlibass option); lcms2 is auto-detected
