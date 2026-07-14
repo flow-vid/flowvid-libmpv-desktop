@@ -96,10 +96,12 @@ jobs:
         run: |
           cd mpv-build
           mkdir -p ../out
-          # meson builds libmpv into mpv/build
-          SO=$(find mpv/build -maxdepth 1 -name 'libmpv.so.2*' -o -maxdepth 1 -name 'libmpv.so.*' | head -1)
-          if [ -z "$SO" ]; then echo "ERROR: libmpv.so not found"; find mpv/build -name 'libmpv*'; exit 1; fi
-          # Resolve the real versioned file + copy as libmpv.so.2
+          # meson builds libmpv into mpv/build. Match the real versioned .so FILE (e.g.
+          # libmpv.so.2.5.0) — NOT the meson '.p' object DIRECTORY and NOT the symlinks.
+          SO=$(find mpv/build -maxdepth 1 -type f -name 'libmpv.so.2.*' | head -1)
+          if [ -z "$SO" ]; then echo "ERROR: libmpv.so not found"; find mpv/build -maxdepth 1 -name 'libmpv*'; exit 1; fi
+          echo "Found: $SO"
+          # Copy the real file as libmpv.so.2 (its SONAME is libmpv.so.2).
           cp -L "$SO" ../out/libmpv.so.2
           cd ../out
           echo "=== ldd (must show NO libx264/libx265) ==="
