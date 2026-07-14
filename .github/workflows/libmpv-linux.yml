@@ -1,0 +1,127 @@
+name: Build libmpv (Linux, LGPL)
+
+# Native Linux LGPL libmpv.so.2 for the FlowVid PC AppImage (Linux port).
+# Mirrors the LGPL posture of the Windows build (mpv -Dgpl=false, ffmpeg no --enable-gpl,
+# no x264/x265) but builds NATIVELY on Ubuntu via the official mpv-player/mpv-build meta-build
+# (the mingw cross-compile used for Windows does not apply to Linux).
+#
+# Output: a self-contained libmpv.so.2 (ffmpeg/libass/libplacebo statically linked in) that the
+# FlowVid AppImage bundles. LGPL compliance = dynamic libmpv the user can replace + full build
+# source in this repo (see LICENSE-NOTES.md).
+on:
+  workflow_dispatch:
+    inputs:
+      release:
+        description: "Publish a GitHub release with the artifact"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    # 22.04 for an older glibc → the .so runs on the widest range of user distros.
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential git pkg-config nasm yasm meson ninja-build \
+            libtool autoconf automake python3 python3-pip \
+            libx11-dev libxext-dev libxpresent-dev libxrandr-dev libxss-dev libxinerama-dev \
+            libgl1-mesa-dev libegl1-mesa-dev libgbm-dev \
+            libwayland-dev wayland-protocols libxkbcommon-dev \
+            libdrm-dev libpulse-dev libasound2-dev \
+            libfreetype6-dev libfontconfig1-dev libfribidi-dev libharfbuzz-dev \
+            zlib1g-dev libbz2-dev liblzma-dev libvulkan-dev glslang-tools
+
+      - name: Clone mpv-build + pin to stable releases
+        run: |
+          git clone --depth 1 https://github.com/mpv-player/mpv-build.git
+          cd mpv-build
+          # Fetch the component sources, then pin ffmpeg + mpv to their latest RELEASE tags
+          # (stable, known-good-together — mirrors shipping a release build not master).
+          ./use-ffmpeg-release
+          ./use-mpv-release
+          ./update
+
+      - name: Configure LGPL build options
+        run: |
+          cd mpv-build
+          # FFmpeg: LGPLv3 (NO --enable-gpl), drop GPL-only encoders (x264/x265) — decoders for
+          # H.264/HEVC/AV1/VP9 are FFmpeg-native (LGPL). libdav1d = fast AV1 (BSD).
+          cat > ffmpeg_options <<'EOF'
+          --disable-gpl
+          --enable-version3
+          --disable-nonfree
+          --disable-programs
+          --disable-doc
+          --disable-libx264
+          --disable-libx265
+          EOF
+          # mpv: LGPL, build libmpv (no cplayer/CLI), no Lua (avoids extra deps).
+          cat > mpv_options <<'EOF'
+          -Dgpl=false
+          -Dlibmpv=true
+          -Dcplayer=false
+          -Dlua=disabled
+          -Dlibass=enabled
+          -Dlcms2=enabled
+          EOF
+          echo "--- ffmpeg_options ---"; cat ffmpeg_options
+          echo "--- mpv_options ---"; cat mpv_options
+
+      - name: Build (ffmpeg + libplacebo + libass + libmpv)
+        run: |
+          cd mpv-build
+          ./rebuild -j"$(nproc)"
+
+      - name: Collect libmpv + verify LGPL
+        id: collect
+        run: |
+          cd mpv-build
+          mkdir -p ../out
+          # meson builds libmpv into mpv/build
+          SO=$(find mpv/build -maxdepth 1 -name 'libmpv.so.2*' -o -maxdepth 1 -name 'libmpv.so.*' | head -1)
+          if [ -z "$SO" ]; then echo "ERROR: libmpv.so not found"; find mpv/build -name 'libmpv*'; exit 1; fi
+          # Resolve the real versioned file + copy as libmpv.so.2
+          cp -L "$SO" ../out/libmpv.so.2
+          cd ../out
+          echo "=== ldd (must show NO libx264/libx265) ==="
+          ldd libmpv.so.2 || true
+          if ldd libmpv.so.2 | grep -qiE 'libx264|libx265'; then
+            echo "ERROR: libmpv links x264/x265 — NOT LGPL"; exit 1
+          fi
+          echo "=== symbol check: x265 count (expect 0) ==="
+          X265=$(nm -D --defined-only libmpv.so.2 2>/dev/null | grep -ic x265 || true)
+          echo "x265 symbols: $X265"
+          MPVVER=$(cd ../mpv-build/mpv && git describe --tags 2>/dev/null || echo unknown)
+          FFVER=$(cd ../mpv-build/ffmpeg && git describe --tags 2>/dev/null || echo unknown)
+          echo "mpv=$MPVVER ffmpeg=$FFVER"
+          echo "mpv_version=$MPVVER" >> "$GITHUB_OUTPUT"
+          echo "ff_version=$FFVER" >> "$GITHUB_OUTPUT"
+          sha256sum libmpv.so.2
+          tar czf ../libmpv-linux-lgpl-amd64.tar.gz libmpv.so.2
+          ls -la ../libmpv-linux-lgpl-amd64.tar.gz
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: libmpv-linux-lgpl-amd64
+          path: libmpv-linux-lgpl-amd64.tar.gz
+
+      - name: Publish release
+        if: ${{ inputs.release }}
+        uses: ncipollo/release-action@v1
+        with:
+          tag: linux-lgpl-${{ github.run_number }}
+          name: libmpv Linux LGPL (mpv ${{ steps.collect.outputs.mpv_version }}, ffmpeg ${{ steps.collect.outputs.ff_version }})
+          body: |
+            Native Linux **LGPLv2.1+/v3** `libmpv.so.2` for the FlowVid PC AppImage.
+            Built via mpv-build: mpv `-Dgpl=false`, ffmpeg without `--enable-gpl`, no x264/x265.
+            The FlowVid AppImage CI downloads `libmpv-linux-lgpl-amd64.tar.gz` (set repo/release in `LINUX_LIBMPV_URL`).
+          artifacts: "libmpv-linux-lgpl-amd64.tar.gz"
+          allowUpdates: true
+          token: ${{ secrets.GITHUB_TOKEN }}
