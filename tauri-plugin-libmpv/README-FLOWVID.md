@@ -32,6 +32,6 @@ All other files are unchanged from upstream. The full MPL-2.0 text is in `LICENS
 ## How this is published
 
 The FlowVid Desktop "Open-Source Licenses" screen (Settings → About) links here:
-`https://github.com/FxPandaa/flowvid-libmpv-desktop/tree/main/tauri-plugin-libmpv`. That public
+`https://github.com/flow-vid/flowvid-libmpv-desktop/tree/main/tauri-plugin-libmpv`. That public
 repo (the desktop LGPL-libmpv factory) carries this plugin's source as a subfolder, kept in sync
 whenever the plugin changes — so no separate repository is needed.
