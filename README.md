@@ -1,9 +1,16 @@
-> ## FlowVid fork — libmpv Windows **CI / build (LGPL)**
+> ## FlowVid fork: libmpv desktop CI and LGPL builds
 > Builds the LGPL `libmpv-2.dll` bundled in FlowVid PC, from the pinned recipe
 > **[flow-vid/flowvid-mpv-winbuild-cmake](https://github.com/flow-vid/flowvid-mpv-winbuild-cmake)**.
 > LGPL via `compile-lgpl-libmpv.patch` (see **[LICENSE-NOTES.md](LICENSE-NOTES.md)**).
-> **Build order:** run `llvm.yml` → `toolchain.yml` → `mpv.yml` (with `lgpl=true`, `compiler=clang`, `build_target=64bit`).
+> **Build order:** run `llvm.yml`, then `toolchain.yml`, then `mpv.yml` with `lgpl=true`,
+> `compiler=clang` and `build_target=64bit`. The immutable Linux build used by FlowVid is published as
+> `linux-lgpl-mpv-v0.41.0-ffmpeg-n8.1.2-r2`.
 > Fork of `zhongfly/mpv-winbuild`.
+
+FlowVid release workflows pin third-party Actions to exact commits. Published Windows releases are
+created from a populated draft and become immutable when published. The historical rolling Linux
+workflow is retained at recipe commit `267ecd26febe2456b8ed83c736529a76b570d4a4`; current clients use
+the immutable `r2` artifact and verify its SHA-256 before packaging.
 
 
 # mpv-winbuild
