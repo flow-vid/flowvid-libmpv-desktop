@@ -8,7 +8,7 @@ This fork builds **libmpv-2.dll for Windows under LGPLv2.1+** for use in the clo
 - **No decoder is removed** — H.264/HEVC/AV1/VP9 are FFmpeg-native (LGPL), libass is ISC, libplacebo
   (HDR/scaling/deband) stays. Playback + FlowVidPC's high-quality mpv profile are unaffected.
 - **Compliance**: shipped as a dynamic `libmpv-2.dll` the user can replace; corresponding source =
-  this repo (CI) + `FxPandaa/flowvid-mpv-winbuild-cmake` (recipe, version-pinned — see its `VERSIONS.md`).
+  this repo (CI) + `flow-vid/flowvid-mpv-winbuild-cmake` (recipe, version-pinned; see its `VERSIONS.md`).
 - **Pins**: mpv `v0.41.0`, FFmpeg `n8.0` (recipe pinned at the wired `ref:` in the workflows).
 
 Upstreams: CI automation forked from `zhongfly/mpv-winbuild`; recipe forked from
