@@ -2,7 +2,7 @@
 
 Public build and release source for the LGPL libmpv binaries used by FlowVid Desktop on Windows and
 Linux. The Windows build consumes the pinned
-[`flowvid-mpv-winbuild-cmake`](https://github.com/flow-vid/flowvid-mpv-winbuild-cmake) recipe. The
+[`flowvid-libmpv-windows-recipe`](https://github.com/flow-vid/flowvid-libmpv-windows-recipe) recipe. The
 Linux build records its source and dependency pins in the release manifest.
 
 ## Published artifacts
