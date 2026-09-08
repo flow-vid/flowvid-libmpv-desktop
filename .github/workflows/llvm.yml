@@ -76,7 +76,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: flow-vid/flowvid-libmpv-windows-recipe
-          ref: 674e72d3e03936d30b2bd718cbd34e2ff5c06fce
+          ref: 3f02a1084b1a3b73416012185195c4e2f843e6f7
           path: mpv-winbuild-cmake
           fetch-depth: 0
 
