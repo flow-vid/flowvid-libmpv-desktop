@@ -71,9 +71,9 @@ jobs:
           sudo GOBIN=/usr/bin go install go.chromium.org/luci/cipd/client/cmd/...@latest
           sudo cipd install fuchsia/third_party/clang/linux-amd64 latest -root /usr/local/fuchsia-clang
           echo "PATH=/usr/local/fuchsia-clang/bin:$PATH" >> $GITHUB_ENV
-      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Checkout toolchain
-        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: flow-vid/flowvid-libmpv-windows-recipe
           ref: e0cadc79dae2c5eabb6b17ac574e42b0aa2622ff
