@@ -9,7 +9,7 @@ Linux build records its source and dependency pins in the release manifest.
 
 - Windows: `libmpv-2.dll` archives created by the manual `mpv.yml` workflow.
 - Linux: immutable release
-  [`linux-lgpl-mpv-v0.41.0-ffmpeg-n8.1.2-r2`](../../releases/tag/linux-lgpl-mpv-v0.41.0-ffmpeg-n8.1.2-r2).
+  [`linux-lgpl-mpv-v0.41.0-ffmpeg-n8.1.2-r3`](../../releases/tag/linux-lgpl-mpv-v0.41.0-ffmpeg-n8.1.2-r3).
 - Tauri integration: the MPL-2.0 wrapper under [`tauri-plugin-libmpv`](tauri-plugin-libmpv).
 
 FlowVid Desktop verifies the expected SHA-256 before packaging a downloaded native library. Release
