@@ -116,7 +116,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: flow-vid/flowvid-libmpv-windows-recipe
-          ref: 38c94035d571023c20a0aa61ab80d8f54f89f3dd
+          ref: 674e72d3e03936d30b2bd718cbd34e2ff5c06fce
           path: mpv-winbuild-cmake
           fetch-depth: 0
 
@@ -196,7 +196,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: flow-vid/flowvid-libmpv-windows-recipe
-          ref: 38c94035d571023c20a0aa61ab80d8f54f89f3dd
+          ref: 674e72d3e03936d30b2bd718cbd34e2ff5c06fce
           path: mpv-winbuild-cmake
           fetch-depth: 0
 
