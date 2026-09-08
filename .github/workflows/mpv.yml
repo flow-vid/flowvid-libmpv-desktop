@@ -26,6 +26,11 @@ on:
         required: false
         default: false
         type: boolean
+      lgpl_only:
+        description: "Build ONLY the lgpl libmpv (what FlowVid ships); skips the GPL build"
+        required: false
+        default: false
+        type: boolean
       compiler:
         required: false
         default: "clang"
@@ -104,9 +109,14 @@ jobs:
                 break;
             }
             core.setOutput("matrix_bit",JSON.stringify(matrix));
-            matrix.lgpl=[false];
-            if ("${{ inputs.lgpl}}" == "true") {
-              matrix.lgpl.push(true)
+            if ("${{ inputs.lgpl_only }}" == "true") {
+              // FlowVid ships only the LGPL libmpv; the GPL leg is not maintained.
+              matrix.lgpl=[true];
+            } else {
+              matrix.lgpl=[false];
+              if ("${{ inputs.lgpl}}" == "true") {
+                matrix.lgpl.push(true)
+              }
             }
             core.setOutput("matrix",JSON.stringify(matrix));
 
@@ -197,7 +207,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: flow-vid/flowvid-libmpv-windows-recipe
-          ref: 3f02a1084b1a3b73416012185195c4e2f843e6f7
+          ref: c771d80d9b4866dbb7c3e25d81e3de0ae103120f
           path: mpv-winbuild-cmake
           fetch-depth: 0
       - name: Prepare
