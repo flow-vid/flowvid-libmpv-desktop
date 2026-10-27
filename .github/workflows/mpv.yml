@@ -309,7 +309,7 @@ jobs:
           key: ${{ env.build_restore_key }}
 
       - name: Set up ccache
-        uses: Chocobo1/setup-ccache-action@a4d08616f5b614053bce228ddf881592f69d61d4 # v1
+        uses: Chocobo1/setup-ccache-action@efeb0f4b0670854c2190fd2389da92c399ff5ceb # v1
         with:
           update_packager_index: false
           install_ccache: false
