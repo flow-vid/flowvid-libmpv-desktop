@@ -145,7 +145,8 @@ impl<R: Runtime> Mpv<R> {
         };
 
         if mpv_handle.is_null() {
-            let _ = unsafe { Box::from_raw(event_userdata as *mut (AppHandle<R>, String)) };
+            // Free it as the type it was boxed as (EventUserData), not a look-alike tuple.
+            let _ = unsafe { Box::from_raw(event_userdata as *mut EventUserData<R>) };
             return Err(crate::Error::CreateInstance);
         }
 
