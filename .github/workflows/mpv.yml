@@ -208,7 +208,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: flow-vid/flowvid-libmpv-windows-recipe
-          ref: 83d9e60a6500ffe921139a21085dc37ce1a03b71
+          ref: fef781a134b81ae10a6ccdd74af1cfd48715fbce
           path: mpv-winbuild-cmake
           fetch-depth: 0
       - name: Prepare
