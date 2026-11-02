@@ -28,6 +28,7 @@ env:
   MPV_TAG: v0.41.0
   FFMPEG_TAG: n9.0.2
   LIBPLACEBO_TAG: v7.387.0
+  DAV1D_TAG: 1.5.4
 
 permissions:
   contents: write
@@ -67,6 +68,17 @@ jobs:
           ./update
           for d in ffmpeg mpv libplacebo; do echo "$d: $(git -C "$d" describe --tags --always)"; done
 
+      - name: Build dav1d (static, for software AV1 decoding)
+        run: |
+          # FFmpeg's own AV1 decoder only works with hardware decoding. Without libdav1d the library
+          # cannot play AV1 at all on a PC without an AV1-capable GPU (measured 2026-11: "Your platform
+          # doesn't support hardware accelerated AV1 decoding" on every frame). Static, so libmpv.so.2
+          # needs no libdav1d.so at run time (distros ship different sonames).
+          git clone --depth 1 --branch "$DAV1D_TAG" https://code.videolan.org/videolan/dav1d.git
+          meson setup dav1d/build dav1d --buildtype=release --default-library=static -Db_staticpic=true             -Denable_tools=false -Denable_tests=false --prefix="$HOME/dav1d-prefix" --libdir=lib
+          ninja -C dav1d/build install
+          echo "PKG_CONFIG_PATH=$HOME/dav1d-prefix/lib/pkgconfig" >> "$GITHUB_ENV"
+
       - name: Configure LGPL build options
         run: |
           cd mpv-build
@@ -84,6 +96,7 @@ jobs:
           --disable-libx264
           --disable-libx265
           --disable-vulkan
+          --enable-libdav1d
           EOF
           # mpv: LGPL, build libmpv (no cplayer/CLI), no Lua (avoids extra deps).
           # libplacebo without Vulkan: its public libav.h pulls in ffmpeg's hwcontext_vulkan.h,
@@ -129,6 +142,10 @@ jobs:
           echo "=== symbol check: x265 count (expect 0) ==="
           X265=$(nm -D --defined-only libmpv.so.2 2>/dev/null | grep -ic x265 || true)
           echo "x265 symbols: $X265"
+          # Software AV1 must be inside the library, and linked in statically.
+          if ldd libmpv.so.2 | grep -qi 'libdav1d'; then echo "ERROR: libdav1d linked dynamically"; exit 1; fi
+          if ! grep -qa 'libdav1d' libmpv.so.2; then echo "ERROR: no libdav1d AV1 decoder in libmpv"; exit 1; fi
+          echo "libdav1d: built in (static)"
           MPVVER=$(cd ../mpv-build/mpv && git describe --tags 2>/dev/null || echo unknown)
           FFVER=$(cd ../mpv-build/ffmpeg && git describe --tags 2>/dev/null || echo unknown)
           echo "mpv=$MPVVER ffmpeg=$FFVER"
