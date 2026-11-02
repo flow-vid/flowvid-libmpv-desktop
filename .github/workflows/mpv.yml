@@ -184,7 +184,8 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/archlinux/archlinux:base-devel
-    continue-on-error: true
+    # No continue-on-error here: a failed libmpv build must show as a failed run (2026-11: a glad pin
+    # failure showed green and uploaded only logs). The cache jobs below still run after a failure.
     strategy:
       matrix: ${{ fromJson(needs.params.outputs.matrix) }}
 
@@ -207,7 +208,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: flow-vid/flowvid-libmpv-windows-recipe
-          ref: 9c43837e912f0b675a2dc112f6b4ec3eea61e295
+          ref: 83d9e60a6500ffe921139a21085dc37ce1a03b71
           path: mpv-winbuild-cmake
           fetch-depth: 0
       - name: Prepare
@@ -734,7 +735,7 @@ jobs:
   cache:
     name: keep cache alive
     needs: [params,build_mpv]
-    if: ${{ inputs.no_save_cache != true }}
+    if: ${{ !cancelled() && inputs.no_save_cache != true }}
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/archlinux/archlinux:base-devel
@@ -781,7 +782,7 @@ jobs:
   cache_llvm:
     name: keep llvm cache alive
     needs: [params,build_mpv]
-    if: ${{ inputs.no_save_cache != true && inputs.compiler =='clang' }}
+    if: ${{ !cancelled() && inputs.no_save_cache != true && inputs.compiler =='clang' }}
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/archlinux/archlinux:base-devel
