@@ -89,7 +89,7 @@ index 993bb28..abb97a5 100644
          --enable-libfreetype
          --enable-libfribidi
          --enable-libfontconfig
-@@ -79,27 +65,20 @@ ExternalProject_Add(ffmpeg
+@@ -79,26 +65,19 @@ ExternalProject_Add(ffmpeg
          --enable-libspeex
          --enable-libvorbis
          --enable-libbs2b
@@ -112,7 +112,6 @@ index 993bb28..abb97a5 100644
          --enable-libvpl
          --enable-libjxl
          --enable-libplacebo
-         --enable-libshaderc
 -        --enable-libzvbi
          --enable-libaribcaption
          --enable-cuda-llvm
